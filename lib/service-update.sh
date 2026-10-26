@@ -443,10 +443,8 @@ _su_update_locked() { # <to> <check> <force>
         fail "No current release ($home/current is missing). Run: kronn service install"
         return 1
     fi
-    if [[ ! -d "$src/.git" ]]; then
-        fail "The service clone $src is missing. Run: kronn service install"
-        return 1
-    fi
+    # A --from-checkout install has no clone yet; releases still come from one.
+    _service_clone_into "$src" || return 1
 
     step "Updating the Kronn service (current: $cur)"
     info "Fetching tags..."

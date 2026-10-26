@@ -216,6 +216,25 @@ old_time() { touch -t 202001010000 "$1"; }
     ! grep -q "^build " "$CALLS"
 }
 
+@test "update: a --from-checkout install (no clone) clones and moves to the release" {
+    add_tag 0.1.0
+    add_tag 0.2.0
+    git -C "$TEST_TMPDIR/work" remote add origin "$TEST_TMPDIR/origin.git"
+    KRONN_DIR="$TEST_TMPDIR/work"
+    fake_release 0.2.0-dev-abc1234
+    service_switch_current 0.2.0-dev-abc1234
+    mkdir -p "$(dirname "$(service_unit_path)")"
+    touch "$(service_unit_path)" "$STATE/loaded"
+    [ ! -d "$KRONN_SERVICE_HOME/src" ]
+    run cmd_service_update --check
+    [ "$status" -eq 10 ]
+    [[ "$output" == *"0.2.0"* ]]
+    run cmd_service_update --yes
+    [ "$status" -eq 0 ]
+    [ -d "$KRONN_SERVICE_HOME/src/.git" ]
+    [ "$(service_current_version)" = "0.2.0" ]
+}
+
 @test "update: an already staged release is reused without a rebuild" {
     add_tag 0.1.0
     install_at 0.1.0

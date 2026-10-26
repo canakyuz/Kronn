@@ -32,7 +32,8 @@ Release notes for 0.9.3 and earlier are available in the
   offer to stop it first (`start-dev` brings it back on exit). See
   [docs/operations/service.md](docs/operations/service.md).
 - `kronn service update` moves the background service to the latest release
-  (or `--to <X.Y.Z>`): it fetches the service clone, builds and stages the new
+  (or `--to <X.Y.Z>`): it fetches the service clone (creating it after an
+  `install --from-checkout`, which has none), builds and stages the new
   release next to the running one, waits for running workflows and agents to
   finish (`KRONN_SERVICE_DRAIN_TIMEOUT`, default 30 minutes; `--force` skips
   it; when the backend refuses the CLI's token it asks before restarting),
